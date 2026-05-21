@@ -1,23 +1,17 @@
-from schemas.response_parser import parse_llm_response
+from agent.confidence import adjust_confidence
 
 
-fake_response = """
-{
-  "comments": [
-    {
-      "file": "auth.py",
-      "line": 42,
-      "category": "security",
-      "issue": "Possible SQL injection",
-      "severity": "high",
-      "confidence": 91,
-      "suggestion": "Use parameterized queries",
-      "reasoning": "User input enters SQL query directly"
-    }
-  ]
+sample_comment = {
+    "confidence": 85,
+    "issue": "Possible performance issue"
 }
-"""
 
-result = parse_llm_response(fake_response)
+sample_chunk = {
+    "start_line": 1,
+    "end_line": 140,
+    "imports": []
+}
+
+result = adjust_confidence(sample_comment, sample_chunk)
 
 print(result)
