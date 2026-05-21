@@ -1,9 +1,4 @@
-from outputs.markdown_export import (
-    export_to_markdown
-)
-
-
-sample_results = {
+{
     "comments": [
         {
             "file": "auth.py",
@@ -13,9 +8,3 @@ sample_results = {
         }
     ]
 }
-
-file_name = export_to_markdown(
-    sample_results
-)
-
-print(f"Exported: {file_name}")
