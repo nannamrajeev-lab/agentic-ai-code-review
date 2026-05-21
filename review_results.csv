@@ -1,2 +1,0 @@
-file,line,issue,confidence
-auth.py,42,Possible SQL injection,91
