@@ -1,6 +1,7 @@
 from ingestion.cloner import clone_repository
 from ingestion.file_discovery import get_python_files
 from parser.ast_parser import extract_code_chunks
+from agent.prompt_builder import build_review_prompt
 
 
 repo_url = "https://github.com/psf/requests"
@@ -21,15 +22,14 @@ try:
 
     chunks = extract_code_chunks(first_file)
 
-    print(f"\nFound {len(chunks)} code chunks:\n")
+    print(f"\nFound {len(chunks)} code chunks")
 
-    for chunk in chunks[:5]:
-        print("=" * 50)
-        print(f"Type: {chunk['type']}")
-        print(f"Name: {chunk['name']}")
-        print(f"File: {chunk['file']}")
-        print(f"Lines: {chunk['start_line']} - {chunk['end_line']}")
-        print(f"Imports: {chunk['imports'][:5]}")
+    first_chunk = chunks[0]
+
+    prompt = build_review_prompt(first_chunk)
+
+    print("\nGenerated Prompt:\n")
+    print(prompt[:2000])
 
 except Exception as e:
     print(e)

@@ -14,7 +14,6 @@ def extract_code_chunks(file_path):
     tree = ast.parse(source_code)
 
     chunks = []
-
     imports = []
 
     # Extract imports first
@@ -27,6 +26,9 @@ def extract_code_chunks(file_path):
         elif isinstance(node, ast.ImportFrom):
             module = node.module if node.module else ""
             imports.append(module)
+
+    # Clean imports BEFORE using them
+    imports = sorted(set(filter(None, imports)))
 
     # Extract functions/classes
     for node in ast.walk(tree):
