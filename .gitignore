@@ -1,3 +1,4 @@
-.env
 venv/
+temp_repos/
 __pycache__/
+.env
