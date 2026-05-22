@@ -132,33 +132,24 @@ Successfully installed ...
 
 ## Step 6: Add OpenAI API Key
 
-This project requires an **OpenAI API key** for real AI reviews.
-
-Create a file named:
+Open the existing:
 
 ```txt
 .env
 ```
 
-Paste:
+file in the project root.
+
+Replace the placeholder key with your own OpenAI API key:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-You can also copy:
+Save the file.
 
-```txt
-.env.example
-```
-
-and rename it to:
-
-```txt
-.env
-```
-
----
+If the key is valid and has API quota,
+the application will generate real AI code reviews.
 
 ## Step 7: Run Streamlit App
 
