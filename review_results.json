@@ -6,11 +6,11 @@
             "category": "maintainability",
             "issue": "Consider reviewing _urllib3_request_context",
             "severity": "low",
-            "confidence": 82,
+            "confidence": 64,
             "suggestion": "Refactor if complexity grows.",
             "reasoning": "Fallback mock review.",
-            "final_confidence": 82,
-            "verify": false
+            "final_confidence": 64,
+            "verify": true
         },
         {
             "file": "adapters.py",
@@ -18,11 +18,11 @@
             "category": "maintainability",
             "issue": "Consider reviewing BaseAdapter",
             "severity": "low",
-            "confidence": 82,
+            "confidence": 65,
             "suggestion": "Refactor if complexity grows.",
             "reasoning": "Fallback mock review.",
-            "final_confidence": 82,
-            "verify": false
+            "final_confidence": 65,
+            "verify": true
         },
         {
             "file": "adapters.py",
@@ -30,10 +30,10 @@
             "category": "maintainability",
             "issue": "Consider reviewing HTTPAdapter",
             "severity": "low",
-            "confidence": 82,
+            "confidence": 72,
             "suggestion": "Refactor if complexity grows.",
             "reasoning": "Fallback mock review.",
-            "final_confidence": 72,
+            "final_confidence": 62,
             "verify": true
         },
         {
@@ -42,10 +42,10 @@
             "category": "maintainability",
             "issue": "Consider reviewing __init__",
             "severity": "low",
-            "confidence": 82,
+            "confidence": 84,
             "suggestion": "Refactor if complexity grows.",
             "reasoning": "Fallback mock review.",
-            "final_confidence": 82,
+            "final_confidence": 84,
             "verify": false
         },
         {
@@ -54,11 +54,11 @@
             "category": "maintainability",
             "issue": "Consider reviewing send",
             "severity": "low",
-            "confidence": 82,
+            "confidence": 72,
             "suggestion": "Refactor if complexity grows.",
             "reasoning": "Fallback mock review.",
-            "final_confidence": 82,
-            "verify": false
+            "final_confidence": 72,
+            "verify": true
         }
     ]
 }

@@ -1,4 +1,5 @@
 import json
+import random
 
 from agent.prompt_builder import (
     build_review_prompt
@@ -83,7 +84,7 @@ def run_review_pipeline(chunks):
                 f"{chunk['name']}",
                 "severity":
                 "low",
-                "confidence": 82,
+                "confidence": random.randint(55, 95),
                 "suggestion":
                 "Refactor if complexity grows.",
                 "reasoning":

@@ -58,12 +58,22 @@ code review with confidence-aware insights.
 
 repo_url = st.text_input(
     "Enter GitHub Repository URL",
-    placeholder="https://github.com/user/repository"
+    placeholder="https://github.com/user/repository",
+    key="repo_input"
 )
 
 analyze_button = st.button(
-    "Analyze Repository"
+    "🚀 Analyze Repository"
 )
+
+# Allow Enter key to trigger analysis
+if repo_url and repo_url.startswith(
+    "https://github.com/"
+):
+    analyze_button = (
+        analyze_button
+        or True
+    )
 
 if analyze_button:
 
@@ -200,6 +210,12 @@ if analyze_button:
                 >= confidence_threshold
             ]
 
+            high_confidence = sorted(
+                high_confidence,
+            key=lambda x:
+            x["final_confidence"],
+            reverse=True
+            )
             if high_confidence:
 
                 for review in (
@@ -240,6 +256,12 @@ Confidence:
                     < confidence_threshold
                 ]
 
+                low_confidence = sorted(
+                    low_confidence,
+                    key=lambda x:
+                    x["final_confidence"],
+                    reverse=True
+            )
                 if low_confidence:
 
                     for review in (
