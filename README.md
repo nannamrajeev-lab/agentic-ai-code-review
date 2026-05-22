@@ -1,34 +1,42 @@
 # AI Code Review Agent
 
-An agentic AI system that clones GitHub repositories, parses code using AST, and generates confidence-aware code review comments.
+An **agentic AI system** that clones GitHub repositories, parses source code using **AST (Abstract Syntax Tree)**, and generates **confidence-aware code review comments** using LLM-based analysis.
+
+The system follows a **Responsible AI approach** by exposing uncertainty through confidence scoring and a dedicated **"Verify This"** section for low-confidence findings.
+
+---
 
 ## Features
 
-- GitHub repository cloning
-- AST-based code parsing
-- Confidence-aware AI code reviews
-- Streamlit dashboard
-- JSON / CSV / Markdown exports
-- Responsible AI via confidence scoring
-- Low-confidence **"Verify This"** section
+✅ GitHub repository cloning  
+✅ AST-based code parsing  
+✅ Function & class extraction  
+✅ Confidence-aware AI code reviews  
+✅ Streamlit interactive dashboard  
+✅ JSON / CSV / Markdown export support  
+✅ Responsible AI via uncertainty handling  
+✅ Low-confidence **"Verify This"** section  
+✅ Graceful fallback mode if API quota is unavailable
 
 ---
 
 ## Tech Stack
 
-- Python
-- Streamlit
-- GitPython
-- OpenAI API (`gpt-4o-mini`)
-- Python AST
-- Pydantic
-- Pandas
+- **Python**
+- **Streamlit**
+- **GitPython**
+- **OpenAI API (`gpt-4o-mini`)**
+- **Python AST**
+- **Pydantic**
+- **Pandas**
 
 ---
 
 ## Live Demo
 
-Deployed on Streamlit Community Cloud.
+Deployed using **Streamlit Community Cloud**.
+
+Paste a GitHub repository URL and analyze the codebase directly.
 
 ---
 
@@ -37,10 +45,24 @@ Deployed on Streamlit Community Cloud.
 ```txt
 agentic-ai-code-review/
 │── agent/
+│   ├── confidence.py
+│   ├── llm_client.py
+│   ├── prompt_builder.py
+│   └── review_pipeline.py
+│
 │── ingestion/
+│   ├── cloner.py
+│   └── file_discovery.py
+│
 │── parser/
-│── schemas/
+│   └── ast_parser.py
+│
 │── outputs/
+│   ├── csv_export.py
+│   ├── json_export.py
+│   └── markdown_export.py
+│
+│── schemas/
 │── temp_repos/
 │── app.py
 │── requirements.txt
@@ -50,27 +72,67 @@ agentic-ai-code-review/
 
 ---
 
-## Installation
+# Quick Start Guide (Windows)
+
+## Step 1: Open Terminal
+
+Open:
+
+- **PowerShell**
+or
+- **VS Code Terminal**
+
+---
+
+## Step 2: Clone Repository
 
 ```bash
-git clone https://github.com/nannamrajeev-lab/agentic-ai-code-review.git
+git clone https://github.com/nannamrajeev-lab/agentic-ai-code-review
 
 cd agentic-ai-code-review
-
-python -m venv venv
-
-.\venv\Scripts\activate
-
-pip install -r requirements.txt
 ```
 
 ---
 
-## OpenAI API Key Setup
+## Step 3: Create Virtual Environment
 
-This project requires an OpenAI API key for **real AI code reviews**.
+```bash
+python -m venv venv
+```
 
-### Step 1: Create `.env`
+---
+
+## Step 4: Activate Virtual Environment
+
+```bash
+.\venv\Scripts\activate
+```
+
+Expected terminal:
+
+```txt
+(venv) PS C:\path\to\agentic-ai-code-review>
+```
+
+---
+
+## Step 5: Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Expected result:
+
+```txt
+Successfully installed ...
+```
+
+---
+
+## Step 6: Add OpenAI API Key
+
+This project requires an **OpenAI API key** for real AI reviews.
 
 Create a file named:
 
@@ -78,17 +140,13 @@ Create a file named:
 .env
 ```
 
-in the project root.
-
-### Step 2: Add API key
-
 Paste:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-You can copy:
+You can also copy:
 
 ```txt
 .env.example
@@ -102,10 +160,62 @@ and rename it to:
 
 ---
 
-## Run Application
+## Step 7: Run Streamlit App
 
 ```bash
 streamlit run app.py
+```
+
+Expected terminal output:
+
+```txt
+Local URL: http://localhost:8501
+```
+
+Open the URL in your browser.
+
+---
+
+## Step 8: Test Repository
+
+Paste this repository into the app:
+
+```txt
+https://github.com/psf/requests
+```
+
+Click:
+
+```txt
+Analyze Repository
+```
+
+Expected behavior:
+
+- Repository cloning
+- Python file discovery
+- AST parsing
+- Code structure preview
+- AI review generation (if API quota exists)
+- Mock review fallback (if quota unavailable)
+- JSON / CSV / Markdown downloads
+
+---
+
+## Step 9: Stop Streamlit
+
+Press:
+
+```txt
+Ctrl + C
+```
+
+---
+
+## Step 10: Deactivate Virtual Environment
+
+```bash
+deactivate
 ```
 
 ---
@@ -114,37 +224,51 @@ streamlit run app.py
 
 ```txt
 GitHub Repository
-→ Clone Repository
-→ Discover Files
-→ AST Parsing
-→ Prompt Generation
-→ LLM Review
-→ Confidence Scoring
-→ Dashboard Output
+        ↓
+Clone Repository
+        ↓
+Discover Python Files
+        ↓
+AST Parsing
+        ↓
+Prompt Generation
+        ↓
+LLM Review
+        ↓
+Confidence Scoring
+        ↓
+Dashboard Output
 ```
+
+---
+
+## Responsible AI Design
+
+Every generated review contains:
+
+- Severity rating
+- Confidence score (**0–100%**)
+- Reasoning
+- Suggested fix
+
+Low-confidence findings are automatically separated into:
+
+```txt
+Verify This
+```
+
+This demonstrates **uncertainty-aware AI behavior** and production-style **epistemic humility**.
 
 ---
 
 ## Notes
 
-- The application becomes fully functional after inserting a valid OpenAI API key.
-- If API quota is unavailable, the system automatically falls back to mock reviews for demonstration purposes.
+- The application becomes **fully functional** after inserting a valid OpenAI API key.
+- If API quota is unavailable, the system automatically falls back to **mock reviews** for demonstration.
 - The architecture remains identical to the production version.
-
----
-
-## Responsible AI
-
-Every generated review includes:
-
-- Severity rating
-- Confidence score (0–100%)
-- Low-confidence segregation (`Verify This` section)
-
-This demonstrates uncertainty-aware AI behavior and production-style epistemic humility.
 
 ---
 
 ## Deployment
 
-Deployed using Streamlit Community Cloud.
+Deployed using **Streamlit Community Cloud**.
