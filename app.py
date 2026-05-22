@@ -18,7 +18,10 @@ st.set_page_config(
 )
 
 st.title("🤖 AI Code Review Agent")
-st.caption("The Humility Agent — Confidence-Aware Code Reviews")
+st.caption(
+    "The Humility Agent — Confidence-Aware Code Reviews"
+)
+
 st.info(
     """
 🔑 Real AI reviews require an OpenAI API key.
@@ -61,7 +64,6 @@ repo_url = st.text_input(
 analyze_button = st.button(
     "Analyze Repository"
 )
-
 
 if analyze_button:
 
@@ -185,7 +187,8 @@ if analyze_button:
 
             # High confidence reviews
             st.subheader(
-                "✅ Actionable Insights"
+                f"✅ High Confidence Insights "
+                f"(≥ {confidence_threshold}%)"
             )
 
             high_confidence = [
@@ -193,7 +196,8 @@ if analyze_button:
                 for c in review_results[
                     "comments"
                 ]
-                if not c["verify"]
+                if c["final_confidence"]
+                >= confidence_threshold
             ]
 
             if high_confidence:
@@ -223,8 +227,8 @@ Confidence:
 
             # Low confidence reviews
             with st.expander(
-                "⚠ Verify This "
-                "(Low Confidence Findings)"
+                f"⚠ Verify This "
+                f"(< {confidence_threshold}%)"
             ):
 
                 low_confidence = [
@@ -232,7 +236,8 @@ Confidence:
                     for c in review_results[
                         "comments"
                     ]
-                    if c["verify"]
+                    if c["final_confidence"]
+                    < confidence_threshold
                 ]
 
                 if low_confidence:
