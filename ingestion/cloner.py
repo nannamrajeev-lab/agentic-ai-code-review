@@ -1,30 +1,75 @@
-from git import Repo
-from pathlib import Path
 import shutil
-import stat
+import time
+from pathlib import Path
+
+from git import Repo
 
 
-def remove_readonly(func, path, _):
-    """Handle Windows permission errors."""
-    Path(path).chmod(stat.S_IWRITE)
-    func(path)
-
-
-def clone_repository(repo_url: str, repo_name: str = "repo") -> str:
+def clone_repository(
+    repo_url: str,
+    repo_name: str
+):
     """
-    Clone a GitHub repository into temp_repos.
-    Returns local repo path.
+    Clone GitHub repository.
+
+    Deletes previous clone
+    before creating a new one
+    to avoid Git conflicts.
     """
 
-    temp_path = Path("temp_repos") / repo_name
+    temp_dir = Path(
+        "temp_repos"
+    )
+
+    temp_dir.mkdir(
+        exist_ok=True
+    )
+
+    repo_path = (
+        temp_dir / repo_name
+    )
 
     # Remove old repo safely
-    if temp_path.exists():
-        shutil.rmtree(temp_path, onerror=remove_readonly)
+    if repo_path.exists():
 
+        try:
+
+            shutil.rmtree(
+                repo_path
+            )
+
+            # Small delay so Windows
+            # releases file locks
+            time.sleep(1)
+
+        except Exception:
+
+            try:
+                shutil.rmtree(
+                    repo_path,
+                    ignore_errors=True
+                )
+
+                time.sleep(1)
+
+            except Exception:
+                pass
+
+    # Clone fresh repo
     try:
-        Repo.clone_from(repo_url, temp_path)
-        return str(temp_path)
+
+        Repo.clone_from(
+            repo_url,
+            str(repo_path)
+        )
+
+        return str(
+            repo_path
+        )
 
     except Exception as e:
-        raise Exception(f"Failed to clone repository: {e}")
+
+        raise Exception(
+            f"Failed to clone "
+            f"repository: {e}"
+        )

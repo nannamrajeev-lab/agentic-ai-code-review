@@ -16,8 +16,44 @@ st.set_page_config(
     page_icon="🤖",
     layout="wide"
 )
+st.markdown(
+    """
+    <style>
+    div[data-testid=
+    "InputInstructions"] {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ----------------------------
+# Session State
+# ----------------------------
+
+if "review_results" not in st.session_state:
+    st.session_state.review_results = None
+
+if "python_files" not in st.session_state:
+    st.session_state.python_files = []
+
+if "total_chunks" not in st.session_state:
+    st.session_state.total_chunks = 0
+
+if "all_chunks" not in st.session_state:
+    st.session_state.all_chunks = []
+
+if "analysis_complete" not in st.session_state:
+    st.session_state.analysis_complete = False
+
+
+# ----------------------------
+# UI
+# ----------------------------
 
 st.title("🤖 AI Code Review Agent")
+
 st.caption(
     "The Humility Agent — Confidence-Aware Code Reviews"
 )
@@ -26,13 +62,16 @@ st.info(
     """
 🔑 Real AI reviews require an OpenAI API key.
 
-Create a `.env` file in the project root and add:
+Open the existing `.env` file
+in the project root and paste
+your API key:
 
 OPENAI_API_KEY=your_api_key_here
 
 If no valid API quota is available,
-the app automatically shows fallback
-mock reviews for demonstration.
+the app automatically shows
+fallback mock reviews for
+demonstration.
 """
 )
 
@@ -56,34 +95,36 @@ code review with confidence-aware insights.
 """
 )
 
-repo_url = st.text_input(
-    "Enter GitHub Repository URL",
-    placeholder="https://github.com/user/repository",
-    key="repo_input"
-)
-
-analyze_button = st.button(
-    "🚀 Analyze Repository"
-)
-
-# Allow Enter key to trigger analysis
-if repo_url and repo_url.startswith(
-    "https://github.com/"
+with st.form(
+    "repo_form"
 ):
-    analyze_button = (
-        analyze_button
-        or True
+
+    repo_url = st.text_input(
+        "Enter or Paste GitHub Repository Link",
+        placeholder=
+        "Enter or paste repository link here..."
     )
+
+    analyze_button = (
+        st.form_submit_button(
+            "🚀 Analyze Repository"
+        )
+    )
+# ----------------------------
+# Run Analysis
+# ----------------------------
 
 if analyze_button:
 
     if not repo_url:
+
         st.warning(
             "Please enter a repository URL."
         )
 
     else:
         try:
+
             with st.spinner(
                 "Analyzing repository..."
             ):
@@ -128,224 +169,267 @@ if analyze_button:
                     )
                 )
 
-            st.success(
-                "Repository analysis complete!"
-            )
-
-            # Metrics
-            st.subheader(
-                "Repository Metrics"
-            )
-
-            col1, col2 = st.columns(2)
-
-            col1.metric(
-                "Python Files",
-                len(python_files)
-            )
-
-            col2.metric(
-                "Functions / Classes",
-                total_chunks
-            )
-
-            # Files analyzed
-            st.subheader(
-                "Files Analyzed"
-            )
-
-            for file in python_files[:10]:
-                st.write(file)
-
-            # AST Preview
-            st.subheader(
-                "Code Structure Preview"
-            )
-
-            preview_chunks = (
-                all_chunks[:10]
-            )
-
-            for chunk in preview_chunks:
-
-                with st.expander(
-                    f"{chunk['type'].title()}: "
-                    f"{chunk['name']}"
-                ):
-
-                    st.write(
-                        f"**File:** "
-                        f"{chunk['file']}"
-                    )
-
-                    st.write(
-                        f"**Lines:** "
-                        f"{chunk['start_line']}"
-                        f" - "
-                        f"{chunk['end_line']}"
-                    )
-
-                    st.write(
-                        f"**Imports:** "
-                        f"{', '.join(chunk['imports'][:5])}"
-                    )
-
-                    st.code(
-                        chunk["code"][:600],
-                        language="python"
-                    )
-
-            # High confidence reviews
-            st.subheader(
-                f"✅ High Confidence Insights "
-                f"(≥ {confidence_threshold}%)"
-            )
-
-            high_confidence = [
-                c
-                for c in review_results[
-                    "comments"
-                ]
-                if c["final_confidence"]
-                >= confidence_threshold
-            ]
-
-            high_confidence = sorted(
-                high_confidence,
-            key=lambda x:
-            x["final_confidence"],
-            reverse=True
-            )
-            if high_confidence:
-
-                for review in (
-                    high_confidence
-                ):
-
-                    st.success(
-                        f"""
-Issue:
-{review['issue']}
-
-File:
-{review['file']}
-
-Confidence:
-{review['final_confidence']}%
-"""
-                    )
-
-            else:
-                st.info(
-                    "No high confidence "
-                    "issues found."
-                )
-
-            # Low confidence reviews
-            with st.expander(
-                f"⚠ Verify This "
-                f"(< {confidence_threshold}%)"
-            ):
-
-                low_confidence = [
-                    c
-                    for c in review_results[
-                        "comments"
-                    ]
-                    if c["final_confidence"]
-                    < confidence_threshold
-                ]
-
-                low_confidence = sorted(
-                    low_confidence,
-                    key=lambda x:
-                    x["final_confidence"],
-                    reverse=True
-            )
-                if low_confidence:
-
-                    for review in (
-                        low_confidence
-                    ):
-
-                        st.warning(
-                            f"""
-Issue:
-{review['issue']}
-
-File:
-{review['file']}
-
-Confidence:
-{review['final_confidence']}%
-"""
-                        )
-
-                else:
-                    st.info(
-                        "No low confidence "
-                        "findings."
-                    )
-
-            # Export section
-            st.subheader(
-                "Download Results"
-            )
-
-            json_file = (
-                export_to_json(
+                # Save results
+                st.session_state.review_results = (
                     review_results
                 )
-            )
 
-            csv_file = (
-                export_to_csv(
-                    review_results
-                )
-            )
-
-            md_file = (
-                export_to_markdown(
-                    review_results
-                )
-            )
-
-            col1, col2, col3 = (
-                st.columns(3)
-            )
-
-            with open(
-                json_file,
-                "rb"
-            ) as file:
-
-                col1.download_button(
-                    "Download JSON",
-                    file,
-                    file_name=json_file
+                st.session_state.python_files = (
+                    python_files
                 )
 
-            with open(
-                csv_file,
-                "rb"
-            ) as file:
-
-                col2.download_button(
-                    "Download CSV",
-                    file,
-                    file_name=csv_file
+                st.session_state.total_chunks = (
+                    total_chunks
                 )
 
-            with open(
-                md_file,
-                "rb"
-            ) as file:
-
-                col3.download_button(
-                    "Download Markdown",
-                    file,
-                    file_name=md_file
+                st.session_state.all_chunks = (
+                    all_chunks
                 )
+
+                st.session_state.analysis_complete = True
 
         except Exception as e:
             st.error(f"Error: {e}")
+
+# ----------------------------
+# Display Results
+# ----------------------------
+
+if st.session_state.analysis_complete:
+
+    review_results = (
+        st.session_state.review_results
+    )
+
+    python_files = (
+        st.session_state.python_files
+    )
+
+    total_chunks = (
+        st.session_state.total_chunks
+    )
+
+    all_chunks = (
+        st.session_state.all_chunks
+    )
+
+    st.success(
+        "Repository analysis complete!"
+    )
+
+    # Metrics
+    st.subheader(
+        "Repository Metrics"
+    )
+
+    col1, col2 = st.columns(2)
+
+    col1.metric(
+        "Python Files",
+        len(python_files)
+    )
+
+    col2.metric(
+        "Functions / Classes",
+        total_chunks
+    )
+
+    # Files analyzed
+    st.subheader(
+        "Files Analyzed"
+    )
+
+    for file in python_files[:10]:
+        st.write(file)
+
+    # AST Preview
+    st.subheader(
+        "Code Structure Preview"
+    )
+
+    preview_chunks = (
+        all_chunks[:10]
+    )
+
+    for chunk in preview_chunks:
+
+        with st.expander(
+            f"{chunk['type'].title()}: "
+            f"{chunk['name']}"
+        ):
+
+            st.write(
+                f"**File:** "
+                f"{chunk['file']}"
+            )
+
+            st.write(
+                f"**Lines:** "
+                f"{chunk['start_line']}"
+                f" - "
+                f"{chunk['end_line']}"
+            )
+
+            st.write(
+                f"**Imports:** "
+                f"{', '.join(chunk['imports'][:5])}"
+            )
+
+            st.code(
+                chunk["code"][:600],
+                language="python"
+            )
+
+    # High confidence reviews
+    st.subheader(
+        f"✅ High Confidence Insights "
+        f"(≥ {confidence_threshold}%)"
+    )
+
+    high_confidence = [
+        c
+        for c in review_results[
+            "comments"
+        ]
+        if c["final_confidence"]
+        >= confidence_threshold
+    ]
+
+    high_confidence = sorted(
+        high_confidence,
+        key=lambda x:
+        x["final_confidence"],
+        reverse=True
+    )
+
+    if high_confidence:
+
+        for review in (
+            high_confidence
+        ):
+
+            st.success(
+                f"""
+Issue:
+{review['issue']}
+
+File:
+{review['file']}
+
+Confidence:
+{review['final_confidence']}%
+"""
+            )
+
+    else:
+        st.info(
+            "No high confidence "
+            "issues found."
+        )
+
+    # Low confidence reviews
+    with st.expander(
+        f"⚠ Verify This "
+        f"(< {confidence_threshold}%)"
+    ):
+
+        low_confidence = [
+            c
+            for c in review_results[
+                "comments"
+            ]
+            if c["final_confidence"]
+            < confidence_threshold
+        ]
+
+        low_confidence = sorted(
+            low_confidence,
+            key=lambda x:
+            x["final_confidence"],
+            reverse=True
+        )
+
+        if low_confidence:
+
+            for review in (
+                low_confidence
+            ):
+
+                st.warning(
+                    f"""
+Issue:
+{review['issue']}
+
+File:
+{review['file']}
+
+Confidence:
+{review['final_confidence']}%
+"""
+                )
+
+        else:
+            st.info(
+                "No low confidence "
+                "findings."
+            )
+
+    # Export section
+    st.subheader(
+        "Download Results"
+    )
+
+    json_file = (
+        export_to_json(
+            review_results
+        )
+    )
+
+    csv_file = (
+        export_to_csv(
+            review_results
+        )
+    )
+
+    md_file = (
+        export_to_markdown(
+            review_results
+        )
+    )
+
+    col1, col2, col3 = (
+        st.columns(3)
+    )
+
+    with open(
+        json_file,
+        "rb"
+    ) as file:
+
+        col1.download_button(
+            "Download JSON",
+            file,
+            file_name=json_file
+        )
+
+    with open(
+        csv_file,
+        "rb"
+    ) as file:
+
+        col2.download_button(
+            "Download CSV",
+            file,
+            file_name=csv_file
+        )
+
+    with open(
+        md_file,
+        "rb"
+    ) as file:
+
+        col3.download_button(
+            "Download Markdown",
+            file,
+            file_name=md_file
+        )
