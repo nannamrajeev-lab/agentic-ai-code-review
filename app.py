@@ -19,6 +19,19 @@ st.set_page_config(
 
 st.title("🤖 AI Code Review Agent")
 st.caption("The Humility Agent — Confidence-Aware Code Reviews")
+st.info(
+    """
+🔑 Real AI reviews require an OpenAI API key.
+
+Create a `.env` file in the project root and add:
+
+OPENAI_API_KEY=your_api_key_here
+
+If no valid API quota is available,
+the app automatically shows fallback
+mock reviews for demonstration.
+"""
+)
 
 # Sidebar
 st.sidebar.header("Settings")

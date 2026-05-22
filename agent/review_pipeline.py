@@ -14,20 +14,10 @@ from agent.llm_client import (
 
 
 def run_review_pipeline(chunks):
-    """
-    Review pipeline.
-    Uses mock reviews if API fails.
-    """
 
     all_reviews = []
 
-    client = None
-
-    try:
-        client = get_openai_client()
-
-    except:
-        pass
+    client = get_openai_client()
 
     for chunk in chunks[:5]:
 
@@ -37,16 +27,48 @@ def run_review_pipeline(chunks):
 
         comment = None
 
-        # Future LLM block
-        if client:
-            try:
-                # Will activate after credits
-                pass
+        try:
+            response = (
+                client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content":
+                            "You are an expert code reviewer."
+                        },
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ],
+                    temperature=0
+                )
+            )
 
-            except:
-                pass
+            content = (
+                response.choices[0]
+                .message.content
+            )
 
-        # Mock fallback
+            parsed = json.loads(content)
+
+            if (
+                parsed.get("comments")
+                and len(
+                    parsed["comments"]
+                ) > 0
+            ):
+                comment = (
+                    parsed["comments"][0]
+                )
+
+        except Exception as e:
+            print(
+                f"LLM Error: {e}"
+            )
+
+        # Fallback mock
         if not comment:
 
             comment = {
@@ -65,8 +87,7 @@ def run_review_pipeline(chunks):
                 "suggestion":
                 "Refactor if complexity grows.",
                 "reasoning":
-                "Mock review before "
-                "API integration."
+                "Fallback mock review."
             }
 
         final_comment = (
