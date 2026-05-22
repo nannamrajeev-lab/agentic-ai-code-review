@@ -287,9 +287,9 @@ Example:
 ```
  After changing the value save it( ctrl+S), run these commands in terminal ( either vs terminal or any other but keep using one terminal through the project customization):
 
-git add .( space should be there between "and" and "." , press enter)
-git commit -m "increase review scope"(press enter)
-git push(press enter)
+1.git add .( space should be there between "and" and "." , press enter)
+2.git commit -m "increase review scope"(press enter)
+3.git push(press enter)
 
 Now close the previous app which is loaded before the number change and revisit the app link(https://agentic-ai-code-review-fvqmaqtgkherzan7pkyvoq.streamlit.app/). 
 Finally click on three dots on the right side of the link , and click on reboot. You can have customized insights.
