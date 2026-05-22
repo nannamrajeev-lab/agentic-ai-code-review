@@ -310,6 +310,17 @@ Recommended values:
 
 For large repositories, increasing this number may increase runtime and API usage.
 
-## Deployment
+##  Future Deployments
 
-Deployed using **Streamlit Community Cloud**.
+## Future Improvements
+
+With more development time, the project could be extended with:
+
+- GitHub Pull Request inline review comments
+- Multi-file contextual analysis
+- Support for additional languages using tree-sitter
+- Better confidence calibration using model self-evaluation
+- Repository-wide issue aggregation
+- More advanced UI filtering and search
+- Batch repository analysis
+- Can add customization of insights to the UI.
