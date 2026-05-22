@@ -34,11 +34,21 @@ The system follows a **Responsible AI approach** by exposing uncertainty through
 
 ## Live Demo
 
-Deployed using **Streamlit Community Cloud**.
+## Live Demo
+
+Live shareable demo:
+
+https://share.streamlit.io/?utm_source=chatgpt.com
 
 Paste a GitHub repository URL and analyze the codebase directly.
 
----
+### Test Repository
+
+You can test the application with:
+
+```txt
+https://github.com/psf/requests
+```
 
 ## Project Structure
 
