@@ -34,8 +34,6 @@ The system follows a **Responsible AI approach** by exposing uncertainty through
 
 ## Live Demo
 
-## Live Demo
-
 Live shareable demo:
 
 https://share.streamlit.io/?utm_source=chatgpt.com
