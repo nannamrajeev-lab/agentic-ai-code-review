@@ -260,6 +260,48 @@ This demonstrates **uncertainty-aware AI behavior** and production-style **epist
 
 ---
 
+## Customization
+
+### Adjust Number of Review Insights
+
+To improve performance and reduce API cost, the project has a limit to the number of code chunks analyzed[5].
+
+You can change this manually in:
+
+```txt
+agent/review_pipeline.py
+```
+
+Look for a line 23 :
+
+```python
+ for chunk in chunks[:5]:
+```
+
+Increase the value to analyze more code sections.
+
+Example:
+
+```python
+ for chunk in chunks[:15]:
+```
+ After changing the value save it( ctrl+S), run these commands in terminal ( either vs terminal or any other but keep using one terminal through the project customization):
+
+git add .( space should be there between "and" and "." , press enter)
+git commit -m "increase review scope"(press enter)
+git push(press enter)
+
+Now close the previous app which is loaded before the number change and revisit the app link(https://agentic-ai-code-review-fvqmaqtgkherzan7pkyvoq.streamlit.app/). 
+Finally click on three dots on the right side of the link , and click on reboot. You can have customized insights.
+
+Recommended values:
+
+- `5` → Faster demo / lower API usage
+- `10–20` → Balanced analysis
+- `50+` → More comprehensive review (slower)
+
+For large repositories, increasing this number may increase runtime and API usage.
+
 ## Deployment
 
 Deployed using **Streamlit Community Cloud**.
