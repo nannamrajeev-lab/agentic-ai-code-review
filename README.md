@@ -59,7 +59,7 @@ cd agentic-ai-code-review
 
 python -m venv venv
 
-venv\Scripts\activate
+.\venv\Scripts\activate
 
 pip install -r requirements.txt
 ```
