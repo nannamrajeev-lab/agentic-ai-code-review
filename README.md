@@ -312,8 +312,6 @@ For large repositories, increasing this number may increase runtime and API usag
 
 ##  Future Deployments
 
-## Future Improvements
-
 With more development time, the project could be extended with:
 
 - GitHub Pull Request inline review comments
